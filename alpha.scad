@@ -44,7 +44,7 @@ use <ascii.scad>;
 // And furthemore, I chose to add the following for legibility reasons:
 //
 //   (e) a diagonal bar through my zero glyph
-//   (f) a bar on the "seven"
+//   (f) a bar on the "Z"
 //
 //
 // Each letter is descibed by a combination of line and circular
@@ -398,11 +398,15 @@ module alpha_draw_string( x, y, angle, string ) {
   len=strlen(string,0);
   wid=sumwidth(string,0,strlen(string,0));
   echo("input string=", string, "  length=", len, " width=", wid );
-  if($uline==true) alpha_draw_delta_rect( x-gap,y-1, wid+gap,0 );
+  if($uline==true) {
+    translate([x,y,0])
+      rotate(angle,[0,0,1]) 
+        alpha_draw_delta_rect( -gap,-1, wid+gap,0 );
+  }
   for( i = [0:strlen(string,0)-1] ) {
     *echo("character=", string[i], " ascii value: ", asc(string[i]) );
     translate([x,y,0])
-      rotate(-angle,[0,0,1]) 
+      rotate(angle,[0,0,1]) 
         translate([sumwidth(string,0,i), 0, 0]) {
           *character_grid(letters[asc(string[i])][iwidth],6,2);
           alpha_letter( letters[asc(string[i])] );
@@ -423,8 +427,8 @@ module alpha_draw_string( x, y, angle, string ) {
 }
 
 
-// alpha_draw_string(0, 0, 0, "  Hello", $cross=bold, $uline=true);
-alpha_draw_string(0, 0, 0, "Simple Technical Lettering", $cross=bold, $uline=true);
+alpha_draw_string(0, 0, 0, "Hello", $cross=bold);
+// alpha_draw_string(0, 0, 0, "Simple Technical Lettering", $cross=bold, $uline=true);
 // alpha_draw_string(0, -10, 0, "ABCDEFGHIJKLMNOPQRSTUVWXYZ");
 // alpha_draw_string(0, -20, 0, "abcdefghijklmnopqrstuvwxyz");
 // alpha_draw_string(0, -30, 0, "0123456789");
@@ -434,7 +438,7 @@ nwords=9;
 angle_span=150;
 angle_half_span=angle_span/2;
 angle_delta=angle_span / (nwords-1);
-radius=10;
+radius=30;
 for( i=[0:(nwords-1)] ) {
   echo("word=",sentence[i]);
   alpha_draw_string( getx(radius,(angle_half_span-i*angle_delta)), 

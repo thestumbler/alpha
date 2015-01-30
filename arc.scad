@@ -10,7 +10,7 @@
 */
  
 // rclott 2015-01: 
-//   modified to extrude only square or circular cross sections
+//   modified to extrude square or circular cross sections
 
 module arc_circular( cross, radius, degrees ) {
     // This dies a horible death if it's not rendered here 

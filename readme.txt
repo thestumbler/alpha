@@ -66,7 +66,7 @@ I have implemented these, except "d" which  I don't understand.
 And furthemore, I chose to add the following for legibility reasons:
 
   (e) a diagonal bar through my zero glyph
-  (f) a bar on the "seven"
+  (f) a bar on the "Z"
 
 
 Each letter is descibed by a combination of line and circular
