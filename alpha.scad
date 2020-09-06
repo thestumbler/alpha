@@ -251,7 +251,7 @@ function getangbeg(a)=a[3];
 function getangend(a)=a[4];
 
 function strlen(str,i) = (str[i]==undef ? 0 : 1 + strlen(str,i+1));
-function sumwidth(str,i,len=0) = (len==0 ? 0 : gap + letters[asc(str[i])][iwidth] + sumwidth(str,i+1,len-1));
+function sumwidth(str,i,len=0) = (len==0 ? 0 : gap + letters[myasc(str[i])][iwidth] + sumwidth(str,i+1,len-1));
 
 function captype_line(a)=(a=="round" ? "sphere" : "blunt" );
 function captype_arc(a)=(a=="round" ? "sphere" : "poly" );
@@ -270,7 +270,9 @@ ilines=3;        // index into table of vector of line segments segments
 icircs=4;        // index into table of vector of circular segments
 
 function getcross()=($cross);
+function getgap()=(gap);
 function gettype()=($type);
+function getwid(string)=(2*gap+sumwidth(string,0,strlen(string,0)));
 
 module alpha_line_cap( cross, height, type ) {
   h=height;
@@ -394,23 +396,28 @@ module character_grid(wid,hgt,desc) {
   }
 }
 
+
 module alpha_draw_string( x, y, angle, string ) {
   len=strlen(string,0);
   wid=sumwidth(string,0,strlen(string,0));
-  echo("input string=", string, "  length=", len, " width=", wid );
-  if($uline==true) {
-    translate([x,y,0])
-      rotate(angle,[0,0,1]) 
-        alpha_draw_delta_rect( -gap,-1, wid+gap,0 );
-  }
-  for( i = [0:strlen(string,0)-1] ) {
-    *echo("character=", string[i], " ascii value: ", asc(string[i]) );
-    translate([x,y,0])
-      rotate(angle,[0,0,1]) 
-        translate([sumwidth(string,0,i), 0, 0]) {
-          *character_grid(letters[asc(string[i])][iwidth],6,2);
-          alpha_letter( letters[asc(string[i])] );
-        }
+  *echo("input string=", string, "  length=", len, " width=", wid );
+  //translate([-0.5*wid+gap,0,0])
+  translate([gap,2+0.5*$cross,0.5*$cross])
+  union() {
+    if($uline==true) {
+      translate([x,y,0])
+        rotate(angle,[0,0,1]) 
+          alpha_draw_delta_rect( -gap,-1, wid+gap,0 );
+    }
+    for( i = [0:strlen(string,0)-1] ) {
+      *echo("character=", string[i], " ascii value: ", myasc(string[i]) );
+      translate([x,y,0])
+        rotate(angle,[0,0,1]) 
+          translate([sumwidth(string,0,i), 0, 0]) {
+            *character_grid(letters[myasc(string[i])][iwidth],6,2);
+            alpha_letter( letters[myasc(string[i])] );
+          }
+    }
   }
 }
 
@@ -426,26 +433,6 @@ module alpha_draw_string( x, y, angle, string ) {
   *ascii_chart();
 }
 
-
-alpha_draw_string(0, 0, 0, "Hello", $cross=bold);
-// alpha_draw_string(0, 0, 0, "Simple Technical Lettering", $cross=bold, $uline=true);
-// alpha_draw_string(0, -10, 0, "ABCDEFGHIJKLMNOPQRSTUVWXYZ");
-// alpha_draw_string(0, -20, 0, "abcdefghijklmnopqrstuvwxyz");
-// alpha_draw_string(0, -30, 0, "0123456789");
-
-sentence=["The", "Quick", "Brown", "Fox", "Jumped", "Over", "The", "Lazy", "Dog"];
-nwords=9;
-angle_span=150;
-angle_half_span=angle_span/2;
-angle_delta=angle_span / (nwords-1);
-radius=30;
-for( i=[0:(nwords-1)] ) {
-  echo("word=",sentence[i]);
-  alpha_draw_string( getx(radius,(angle_half_span-i*angle_delta)), 
-                     gety(radius,(angle_half_span-i*angle_delta)), 
-                     (angle_half_span-i*angle_delta) ,
-                     sentence[i], $uline=true );
-}
 
 
 // Draw an ASCII Chart
@@ -487,4 +474,25 @@ module ascii_chart() {
 module display_one_ascii(i) {
   character_grid(6,6,2);
   alpha_letter( letters[i] );
+}
+
+module testme() {
+  alpha_draw_string(0, 0, 0, "Hello", $cross=bold);
+  // alpha_draw_string(0, 0, 0, "Simple Technical Lettering", $cross=bold, $uline=true);
+  // alpha_draw_string(0, -10, 0, "ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+  // alpha_draw_string(0, -20, 0, "abcdefghijklmnopqrstuvwxyz");
+  // alpha_draw_string(0, -30, 0, "0123456789");
+  sentence=["The", "Quick", "Brown", "Fox", "Jumped", "Over", "The", "Lazy", "Dog"];
+  nwords=9;
+  angle_span=150;
+  angle_half_span=angle_span/2;
+  angle_delta=angle_span / (nwords-1);
+  radius=30;
+  for( i=[0:(nwords-1)] ) {
+    echo("word=",sentence[i]);
+    alpha_draw_string( getx(radius,(angle_half_span-i*angle_delta)), 
+                       gety(radius,(angle_half_span-i*angle_delta)), 
+                       (angle_half_span-i*angle_delta) ,
+                       sentence[i], $uline=true );
+  }
 }

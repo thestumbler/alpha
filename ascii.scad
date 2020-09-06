@@ -35,16 +35,17 @@ ASCIIv = [
 
             [ "{",123],[ "|",124],[ "}",125],[ "~",126] 
         ];
+
 ASCIIstart=32;
 ASCIIend=len(ASCIIv)-1+ASCIIstart;
 ASCIIfirst=ASCIIv[0][0];
 ASCIIlast=ASCIIv[len(ASCIIv)-1][0];
 
-// asc() return the character code (number) of the first char of a string
-function asc(string) = ASCIIv[search(string[0],ASCIIv,1,0)[0]][1];
+// myasc() return the character code (number) of the first char of a string
+function myasc(string) = ASCIIv[search(string[0],ASCIIv,1,0)[0]][1];
 
-// chr() return the character (string really) matching the character number
-function chr(charNum) = ASCIIv[search(charNum,ASCIIv,0,1)[0]][0];
+// mychr() return the character (string really) matching the character number
+function mychr(charNum) = ASCIIv[search(charNum,ASCIIv,0,1)[0]][0];
 
 // above will go into a library
 
@@ -69,17 +70,17 @@ echo(str(" start=",ASCIIstart,
 
 
 echo("Test Part 2");
-echo("asc(A) =",asc("A"));
-echo("chr(65)=",chr(65));
-echo("asc(a) =",asc("a"));
-echo("chr(97)=",chr(97));
+echo("myasc(A) =",myasc("A"));
+echo("mychr(65)=",mychr(65));
+echo("myasc(a) =",myasc("a"));
+echo("mychr(97)=",mychr(97));
 
 
 //     space->  ! " # $ % & ' (             <- in ASCII order 
 charWidth = [ 5,2,6,5,6,2,4,2,4 ];  // ... (use 0 for chars you don't support)
-function ascWidth(string) = charWidth[(asc(string[0])-ASCIIstart)];
+function ascWidth(string) = charWidth[(myasc(string[0])-ASCIIstart)];
 
 echo("Width3=",charWidth[3]);
-echo(asc("#"));
+echo(myasc("#"));
 echo("Width'#'=", ascWidth("#"));
 echo("Width'$'=", ascWidth("$"));
